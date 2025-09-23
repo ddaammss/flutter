@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sajunara_app/providers/user_state.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -63,10 +65,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
               OutlinedButton(
                 onPressed: () => _showManualLoginDialog(context),
-                child: Text('일반 회원가입'),
                 style: OutlinedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                 ),
+                child: Text('일반 회원가입'),
               ),
 
               SizedBox(height: 20),

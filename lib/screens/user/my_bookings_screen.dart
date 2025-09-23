@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sajunara_app/providers/user_state.dart';
 
 class MyBookingsScreen extends StatelessWidget {
+  const MyBookingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

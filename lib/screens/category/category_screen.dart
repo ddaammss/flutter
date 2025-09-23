@@ -7,7 +7,7 @@ import 'package:sajunara_app/providers/store_state.dart';
 class CategoryScreen extends StatelessWidget {
   final String category;
 
-  CategoryScreen({required this.category});
+  const CategoryScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {

@@ -9,6 +9,8 @@ import 'package:sajunara_app/screens/user/my_page_screen.dart';
 
 // 메인 화면
 class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     context.read<StoreState>().loadStores();

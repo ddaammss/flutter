@@ -24,6 +24,8 @@ void main() {
 }
 
 class SajuNaraApp extends StatelessWidget {
+  const SajuNaraApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

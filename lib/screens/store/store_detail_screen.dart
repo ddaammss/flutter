@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sajunara_app/models/store.dart';
 
 class StoreDetailScreen extends StatelessWidget {
+  const StoreDetailScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final Store store = ModalRoute.of(context)?.settings.arguments as Store;
@@ -147,7 +149,7 @@ class StoreDetailScreen extends StatelessWidget {
                             (service) =>
                                 _buildServiceItem(context, service, store),
                           )
-                          .toList(),
+                          ,
                     ],
                   ),
                 ),
@@ -188,10 +190,6 @@ class StoreDetailScreen extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(context, '/booking', arguments: store);
           },
-          child: Text(
-            '빠른 예약',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
@@ -199,6 +197,10 @@ class StoreDetailScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+          ),
+          child: Text(
+            '빠른 예약',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
       ),

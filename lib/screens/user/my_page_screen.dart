@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sajunara_app/providers/user_state.dart';
 
 class MyPageScreen extends StatelessWidget {
+  const MyPageScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,7 +175,7 @@ class MyPageScreen extends StatelessWidget {
                 onTap: item['onTap'] as VoidCallback,
               ),
             )
-            .toList(),
+            ,
         Divider(),
         ListTile(
           leading: Icon(Icons.logout, color: Colors.red),
@@ -202,8 +204,8 @@ class MyPageScreen extends StatelessWidget {
               userState.logout();
               Navigator.pop(context);
             },
-            child: Text('로그아웃'),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: Text('로그아웃'),
           ),
         ],
       ),

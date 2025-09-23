@@ -5,12 +5,14 @@ import 'package:sajunara_app/providers/app_state.dart';
 
 // 인트로 화면
 class IntroScreen extends StatefulWidget {
+  const IntroScreen({super.key});
+
   @override
   _IntroScreenState createState() => _IntroScreenState();
 }
 
 class _IntroScreenState extends State<IntroScreen> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
@@ -68,12 +70,12 @@ class _IntroScreenState extends State<IntroScreen> {
                   curve: Curves.easeInOut,
                 );
               },
-              child: Text('시작하기'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.indigo[900],
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
+              child: Text('시작하기'),
             ),
           ],
         ),
@@ -170,18 +172,18 @@ class _IntroScreenState extends State<IntroScreen> {
             children: [
               OutlinedButton(
                 onPressed: onDeny,
-                child: Text('거부'),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
+                child: Text('거부'),
               ),
               ElevatedButton(
                 onPressed: onAllow,
-                child: Text('허용'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigo,
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
+                child: Text('허용'),
               ),
             ],
           ),

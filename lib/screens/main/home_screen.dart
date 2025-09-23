@@ -11,6 +11,8 @@ import '../../widgets/product_card.dart';
 import '../../utils/colors.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,7 +144,7 @@ class HomeScreen extends StatelessWidget {
       onShowAll: () => _showAllRankingDialog(context, '인기 급상승'),
       child: Consumer<StoreState>(
         builder: (context, storeState, child) {
-          return Container(
+          return SizedBox(
             height: 220,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -234,7 +236,7 @@ class HomeScreen extends StatelessWidget {
           _showCategoryRankingDialog(context, category);
         }
       },
-      child: Container(
+      child: SizedBox(
         width: 70,
         child: Column(
           children: [
@@ -331,7 +333,7 @@ class HomeScreen extends StatelessWidget {
       onShowAll: () => _showLocationRecommendationDialog(context),
       child: Consumer<StoreState>(
         builder: (context, storeState, child) {
-          return Container(
+          return SizedBox(
             height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -391,7 +393,6 @@ class HomeScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () => _showShoppingMallDialog(context),
-                  child: Text('전체보기'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     foregroundColor: Colors.white,
@@ -399,12 +400,13 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
+                  child: Text('전체보기'),
                 ),
               ],
             ),
           ),
           // 상품 목록
-          Container(
+          SizedBox(
             height: 180,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -434,7 +436,7 @@ class HomeScreen extends StatelessWidget {
       title: '베스트 리뷰',
       showAll: true,
       onShowAll: () => _showBestReviewDialog(context),
-      child: Container(
+      child: SizedBox(
         height: 150,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -576,8 +578,8 @@ class HomeScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('$type'),
-        content: Container(
+        title: Text(type),
+        content: SizedBox(
           width: double.maxFinite,
           height: 300,
           child: Consumer<StoreState>(
@@ -588,10 +590,10 @@ class HomeScreen extends StatelessWidget {
                   final store = storeState.stores[index];
                   return ListTile(
                     leading: CircleAvatar(
-                      child: Text('${index + 1}'),
                       backgroundColor: index < 3
                           ? Colors.orange
                           : Colors.grey[300],
+                      child: Text('${index + 1}'),
                     ),
                     title: Text(store.name),
                     subtitle: Text(store.category),
@@ -631,7 +633,7 @@ class HomeScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('$category 순위'),
-        content: Container(
+        content: SizedBox(
           width: double.maxFinite,
           height: 300,
           child: Consumer<StoreState>(
@@ -646,8 +648,8 @@ class HomeScreen extends StatelessWidget {
                   final store = filteredStores[index];
                   return ListTile(
                     leading: CircleAvatar(
-                      child: Text('${index + 1}'),
                       backgroundColor: AppColors.getCategoryColor(category),
+                      child: Text('${index + 1}'),
                     ),
                     title: Text(store.name),
                     subtitle: Text(store.location),
@@ -726,7 +728,7 @@ class HomeScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('베스트 리뷰'),
-        content: Container(
+        content: SizedBox(
           width: double.maxFinite,
           height: 300,
           child: ListView.builder(

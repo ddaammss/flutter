@@ -5,7 +5,7 @@ import '../utils/colors.dart';
 class StoreCard extends StatelessWidget {
   final Store store;
 
-  const StoreCard({Key? key, required this.store}) : super(key: key);
+  const StoreCard({super.key, required this.store});
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sajunara_app/models/store.dart';
 
 class BookingScreen extends StatefulWidget {
+  const BookingScreen({super.key});
+
   @override
   _BookingScreenState createState() => _BookingScreenState();
 }
@@ -272,10 +274,6 @@ class _BookingScreenState extends State<BookingScreen> {
                   _showPaymentDialog(context, store);
                 }
               : null,
-          child: Text(
-            '${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원 결제하기',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: _isFormValid() ? Colors.orange : Colors.grey,
             foregroundColor: Colors.white,
@@ -283,6 +281,10 @@ class _BookingScreenState extends State<BookingScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+          ),
+          child: Text(
+            '${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원 결제하기',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -324,7 +326,7 @@ class _BookingScreenState extends State<BookingScreen> {
               '날짜: ${selectedDate!.year}.${selectedDate!.month.toString().padLeft(2, '0')}.${selectedDate!.day.toString().padLeft(2, '0')}',
             ),
             Text('시간: $selectedTime'),
-            Text('인원: ${quantity}명'),
+            Text('인원: $quantity명'),
             SizedBox(height: 16),
             Text(
               '총 결제금액: ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',

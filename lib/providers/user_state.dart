@@ -5,7 +5,7 @@ class UserState extends ChangeNotifier {
   String _userName = '';
   String _userBirthDate = '';
   int _points = 0;
-  List<String> _coupons = [];
+  final List<String> _coupons = [];
 
   bool get isLoggedIn => _isLoggedIn;
   String get userName => _userName;

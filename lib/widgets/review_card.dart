@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ReviewCard extends StatelessWidget {
   final int index;
 
-  const ReviewCard({Key? key, required this.index}) : super(key: key);
+  const ReviewCard({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {

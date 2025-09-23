@@ -9,14 +9,14 @@ class ProductCard extends StatelessWidget {
   final bool isPopular;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.price,
     required this.originalPrice,
     required this.discount,
     this.isNew = false,
     this.isPopular = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class ProductCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${discount}%',
+                        '$discount%',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -193,7 +193,7 @@ class ProductCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      '${discount}% 할인',
+                      '$discount% 할인',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -252,8 +252,8 @@ class ProductCard extends StatelessWidget {
               Navigator.pop(context);
               _showPurchaseDialog(context);
             },
-            child: Text('구매하기'),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: Text('구매하기'),
           ),
         ],
       ),
@@ -299,8 +299,8 @@ class ProductCard extends StatelessWidget {
                 ),
               );
             },
-            child: Text('이동'),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: Text('이동'),
           ),
         ],
       ),

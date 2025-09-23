@@ -6,8 +6,7 @@ class RankingCard extends StatelessWidget {
   final Store store;
   final int rank;
 
-  const RankingCard({Key? key, required this.store, required this.rank})
-    : super(key: key);
+  const RankingCard({super.key, required this.store, required this.rank});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +93,7 @@ class RankingCard extends StatelessWidget {
                           size: 12,
                         ),
                         Text(
-                          '${rank <= 3 ? '+' : '-'}${rank}',
+                          '${rank <= 3 ? '+' : '-'}$rank',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 10,
