@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
 import '../../providers/store_state.dart';
-import '../../models/store.dart';
 import '../search/search_delegate.dart';
 import '../../widgets/store_card.dart';
 import '../../widgets/review_card.dart';
