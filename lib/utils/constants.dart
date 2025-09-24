@@ -1,6 +1,6 @@
 class AppConstants {
   // 앱 정보
-  static const String appName = '사주나라';
+  static const String appName = '무물';
   static const String appVersion = '1.0.0';
   static const String appDescription = '운명을 만나는 특별한 공간';
 

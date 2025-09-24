@@ -9,7 +9,6 @@ class Store {
   final List<String> services;
   final String operatingHours;
   final int price;
-  final int priceInt;
 
   Store({
     required this.id,
@@ -22,6 +21,5 @@ class Store {
     required this.services,
     required this.operatingHours,
     required this.price,
-    required this.priceInt,
   });
 }

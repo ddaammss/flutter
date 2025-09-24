@@ -29,7 +29,7 @@ class SajuNaraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '사주나라',
+      title: '무물',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'NotoSans',

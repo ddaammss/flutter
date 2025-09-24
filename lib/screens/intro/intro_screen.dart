@@ -49,7 +49,7 @@ class _IntroScreenState extends State<IntroScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '사주나라',
+              '무물',
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
