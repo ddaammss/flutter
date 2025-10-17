@@ -31,7 +31,7 @@ class SajuNaraApp extends StatelessWidget {
     return MaterialApp(
       title: '무물',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
         fontFamily: 'NotoSans',
         scaffoldBackgroundColor: Colors.white,
       ),

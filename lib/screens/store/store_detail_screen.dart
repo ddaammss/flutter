@@ -31,32 +31,17 @@ class StoreDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: _getCategoryColor(store.category),
+                          color: _getCategoryColor(store.categoryName),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Text(
-                          store.category,
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
+                        child: Text(store.categoryName, style: TextStyle(color: Colors.white, fontSize: 12)),
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        store.name,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text(store.storeName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
-                      Text(
-                        store.description,
-                        style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                      ),
+                      Text(store.description, style: TextStyle(color: Colors.grey[600], fontSize: 16)),
                       SizedBox(height: 16),
                       Row(
                         children: [
@@ -64,14 +49,14 @@ class StoreDetailScreen extends StatelessWidget {
                           Text('${store.rating}'),
                           SizedBox(width: 16),
                           Icon(Icons.chat_bubble_outline),
-                          Text('${store.reviewCount}'),
+                          Text(store.reviewCount),
                         ],
                       ),
                       SizedBox(height: 8),
                       Row(
                         children: [
                           Icon(Icons.location_on, color: Colors.grey),
-                          Text(store.location),
+                          Text(store.address),
                         ],
                       ),
                       SizedBox(height: 8),
@@ -87,10 +72,7 @@ class StoreDetailScreen extends StatelessWidget {
                         children: store.services
                             .map(
                               (service) => Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(16),
@@ -112,16 +94,10 @@ class StoreDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '공지사항',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text('공지사항', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
                       Text(
-                        '안녕하세요. ${store.name}입니다.\n정확한 상담을 위해 예약 시간을 꼭 지켜주세요.',
+                        '안녕하세요. ${store.storeName}입니다.\n정확한 상담을 위해 예약 시간을 꼭 지켜주세요.',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
@@ -136,20 +112,9 @@ class StoreDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '예약 상품',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text('예약 상품', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       SizedBox(height: 16),
-                      ...store.services
-                          .map(
-                            (service) =>
-                                _buildServiceItem(context, service, store),
-                          )
-                          ,
+                      ...store.services.map((service) => _buildServiceItem(context, service, store)),
                     ],
                   ),
                 ),
@@ -162,18 +127,9 @@ class StoreDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '후기',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text('후기', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       SizedBox(height: 16),
-                      ...List.generate(
-                        3,
-                        (index) => _buildReviewItem(context, index),
-                      ),
+                      ...List.generate(3, (index) => _buildReviewItem(context, index)),
                     ],
                   ),
                 ),
@@ -194,14 +150,9 @@ class StoreDetailScreen extends StatelessWidget {
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: Text(
-            '빠른 예약',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          child: Text('빠른 예약', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
       ),
     );
@@ -224,10 +175,7 @@ class StoreDetailScreen extends StatelessWidget {
             Container(
               width: 60,
               height: 60,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
               child: Icon(Icons.auto_awesome, color: Colors.grey[400]),
             ),
             SizedBox(width: 16),
@@ -235,17 +183,12 @@ class StoreDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    service,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+                  Text(service, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   SizedBox(height: 4),
                   Text(
-                    '${store.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    //'${store.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+                    '1',
+                    style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -261,10 +204,7 @@ class StoreDetailScreen extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -276,30 +216,16 @@ class StoreDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '홍길동 님',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '2025.04.22',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                    ),
+                    Text('홍길동 님', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('2025.04.22', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
                   ],
                 ),
               ),
-              Row(
-                children: List.generate(
-                  5,
-                  (i) => Icon(Icons.star, color: Colors.amber, size: 16),
-                ),
-              ),
+              Row(children: List.generate(5, (i) => Icon(Icons.star, color: Colors.amber, size: 16))),
             ],
           ),
           SizedBox(height: 12),
-          Text(
-            '정말 정확한 상담이었어요. 앞으로의 방향에 대해 많은 도움을 받았습니다. 추천합니다!',
-            style: TextStyle(color: Colors.grey[700]),
-          ),
+          Text('정말 정확한 상담이었어요. 앞으로의 방향에 대해 많은 도움을 받았습니다. 추천합니다!', style: TextStyle(color: Colors.grey[700])),
           SizedBox(height: 12),
           Container(
             padding: EdgeInsets.all(12),
@@ -315,22 +241,13 @@ class StoreDetailScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        '입점사 답변',
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
+                      decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(4)),
+                      child: Text('입점사 답변', style: TextStyle(color: Colors.white, fontSize: 12)),
                     ),
                   ],
                 ),
                 SizedBox(height: 8),
-                Text(
-                  '소중한 후기 감사합니다. 앞으로도 더 나은 상담을 위해 노력하겠습니다.',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
+                Text('소중한 후기 감사합니다. 앞으로도 더 나은 상담을 위해 노력하겠습니다.', style: TextStyle(color: Colors.grey[700])),
               ],
             ),
           ),

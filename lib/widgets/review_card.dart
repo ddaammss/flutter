@@ -1,119 +1,91 @@
 import 'package:flutter/material.dart';
+import '../models/review.dart';
 
 class ReviewCard extends StatelessWidget {
-  final int index;
+  final Review review;
 
-  const ReviewCard({super.key, required this.index});
+  const ReviewCard({super.key, required this.review});
 
   @override
   Widget build(BuildContext context) {
-    final reviewData = _getReviewData(index);
-
-    return Container(
-      width: 200,
-      margin: EdgeInsets.only(right: 12),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: _getAvatarColor(index),
-                child: Text(
-                  reviewData['name']![0],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // ✅ 추가!
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 상단: 사용자 정보 & 별점
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  // ✅ Row 안의 Row를 Expanded로 감싸기
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.blue[100],
+                        child: Text(
+                          review.userNickname.isNotEmpty ? review.userNickname[0] : '?',
+                          style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        // ✅ Column도 Expanded로 감싸기
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min, // ✅ 추가
+                          children: [
+                            Text(
+                              review.userNickname,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              overflow: TextOverflow.ellipsis, // ✅ 이름도 긴 경우 대비
+                            ),
+                            Text(
+                              review.storeName,
+                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                              overflow: TextOverflow.ellipsis, // ✅ 가게명도 긴 경우 대비
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  reviewData['name']!,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Text(
-            reviewData['content']!,
-            style: TextStyle(fontSize: 12),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 8),
-          Row(
-            children: List.generate(
-              5,
-              (i) => Icon(
-                Icons.star,
-                color: i < reviewData['rating']!
-                    ? Colors.amber
-                    : Colors.grey[300],
-                size: 12,
-              ),
+                // 별점 표시 (주석 해제하려면)
+                // Row(
+                //   children: List.generate(
+                //     5,
+                //     (i) => Icon(
+                //       i < review.rating.toInt() ? Icons.star : Icons.star_border,
+                //       color: Colors.amber,
+                //       size: 16,
+                //     ),
+                //   ),
+                // ),
+              ],
             ),
-          ),
-        ],
+
+            SizedBox(height: 12),
+
+            // 리뷰 내용 (2줄 제한)
+            Text(
+              review.content,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+            ),
+
+            SizedBox(height: 8),
+
+            // 작성일
+            //Text(review.createdAt, style: TextStyle(fontSize: 11, color: Colors.grey[500])),
+          ],
+        ),
       ),
     );
-  }
-
-  Map<String, dynamic> _getReviewData(int index) {
-    final reviews = [
-      {
-        'name': '홍길동',
-        'content': '정말 정확한 상담이었어요. 앞으로의 방향에 대해 많은 도움을 받았습니다.',
-        'rating': 5,
-      },
-      {
-        'name': '김영희',
-        'content': '친절하고 자세한 설명 감사합니다. 마음이 한결 편해졌어요.',
-        'rating': 5,
-      },
-      {
-        'name': '박철수',
-        'content': '예약부터 상담까지 모든 과정이 만족스러웠습니다. 추천해요!',
-        'rating': 4,
-      },
-      {
-        'name': '이미영',
-        'content': '진심 어린 조언과 상담에 감동했습니다. 다시 방문할 예정이에요.',
-        'rating': 5,
-      },
-      {
-        'name': '최민수',
-        'content': '전문적이고 정확한 상담이었습니다. 고민이 많이 해결되었어요.',
-        'rating': 4,
-      },
-    ];
-    return reviews[index % reviews.length];
-  }
-
-  Color _getAvatarColor(int index) {
-    final colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.teal,
-    ];
-    return colors[index % colors.length];
   }
 }

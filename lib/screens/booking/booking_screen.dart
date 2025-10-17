@@ -14,29 +14,14 @@ class _BookingScreenState extends State<BookingScreen> {
   String? selectedService;
   int quantity = 1;
 
-  final List<String> timeSlots = [
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-  ];
+  final List<String> timeSlots = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
   @override
   Widget build(BuildContext context) {
     final Store store = ModalRoute.of(context)?.settings.arguments as Store;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('예약하기'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Text('예약하기'), backgroundColor: Colors.white, foregroundColor: Colors.black, elevation: 0),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -45,19 +30,13 @@ class _BookingScreenState extends State<BookingScreen> {
             // 입점사 정보
             Container(
               padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(8)),
               child: Row(
                 children: [
                   Container(
                     width: 60,
                     height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
                     child: Icon(Icons.store, color: Colors.grey[400]),
                   ),
                   SizedBox(width: 16),
@@ -65,23 +44,14 @@ class _BookingScreenState extends State<BookingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          store.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          store.location,
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
+                        Text(store.storeName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(store.address, style: TextStyle(color: Colors.grey[600])),
                         Row(
                           children: [
                             Icon(Icons.star, color: Colors.amber, size: 16),
                             Text('${store.rating}'),
                             SizedBox(width: 8),
-                            Text('${store.reviewCount}'),
+                            Text(store.reviewCount),
                           ],
                         ),
                       ],
@@ -101,7 +71,8 @@ class _BookingScreenState extends State<BookingScreen> {
                   return RadioListTile<String>(
                     title: Text(service),
                     subtitle: Text(
-                      '${store.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+                      //'${store.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+                      '1',
                     ),
                     value: service,
                     groupValue: selectedService,
@@ -148,11 +119,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         selectedDate != null
                             ? '${selectedDate!.year}.${selectedDate!.month.toString().padLeft(2, '0')}.${selectedDate!.day.toString().padLeft(2, '0')}'
                             : '날짜를 선택하세요',
-                        style: TextStyle(
-                          color: selectedDate != null
-                              ? Colors.black
-                              : Colors.grey,
-                        ),
+                        style: TextStyle(color: selectedDate != null ? Colors.black : Colors.grey),
                       ),
                     ],
                   ),
@@ -177,23 +144,13 @@ class _BookingScreenState extends State<BookingScreen> {
                       });
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: isSelected ? Colors.orange : Colors.white,
-                        border: Border.all(
-                          color: isSelected ? Colors.orange : Colors.grey[300]!,
-                        ),
+                        border: Border.all(color: isSelected ? Colors.orange : Colors.grey[300]!),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        time,
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
-                        ),
-                      ),
+                      child: Text(time, style: TextStyle(color: isSelected ? Colors.white : Colors.black)),
                     ),
                   );
                 }).toList(),
@@ -242,21 +199,15 @@ class _BookingScreenState extends State<BookingScreen> {
             // 총 금액
             Container(
               padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(8)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('총 1개', style: TextStyle(fontSize: 16)),
                   Text(
-                    '총금액 ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
+                    //'총금액 ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+                    '1',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange),
                   ),
                 ],
               ),
@@ -278,14 +229,9 @@ class _BookingScreenState extends State<BookingScreen> {
             backgroundColor: _isFormValid() ? Colors.orange : Colors.grey,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: Text(
-            '${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원 결제하기',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          child: Text('1', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
       ),
     );
@@ -295,10 +241,7 @@ class _BookingScreenState extends State<BookingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 12),
         child,
       ],
@@ -306,9 +249,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   bool _isFormValid() {
-    return selectedService != null &&
-        selectedDate != null &&
-        selectedTime != null;
+    return selectedService != null && selectedDate != null && selectedTime != null;
   }
 
   void _showPaymentDialog(BuildContext context, Store store) {
@@ -320,7 +261,7 @@ class _BookingScreenState extends State<BookingScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('입점사: ${store.name}'),
+            Text('입점사: ${store.storeName}'),
             Text('서비스: $selectedService'),
             Text(
               '날짜: ${selectedDate!.year}.${selectedDate!.month.toString().padLeft(2, '0')}.${selectedDate!.day.toString().padLeft(2, '0')}',
@@ -328,20 +269,17 @@ class _BookingScreenState extends State<BookingScreen> {
             Text('시간: $selectedTime'),
             Text('인원: $quantity명'),
             SizedBox(height: 16),
-            Text(
-              '총 결제금액: ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.orange,
-              ),
-            ),
+            // Text(
+            //   '총 결제금액: ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.bold,
+            //     color: Colors.orange,
+            //   ),
+            // ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('취소'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('취소')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);

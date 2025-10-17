@@ -40,9 +40,7 @@ class CategoryScreen extends StatelessWidget {
       ),
       body: Consumer<StoreState>(
         builder: (context, storeState, child) {
-          final filteredStores = storeState.stores
-              .where((store) => store.category == category)
-              .toList();
+          final filteredStores = storeState.stores.where((store) => store.categoryName == category).toList();
 
           return Column(
             children: [
@@ -54,11 +52,7 @@ class CategoryScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '$category 전문가들',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: _getCategoryColor(category),
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: _getCategoryColor(category)),
                   ),
                 ),
               ),
@@ -95,10 +89,7 @@ class CategoryScreen extends StatelessWidget {
               Container(
                 width: 80,
                 height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
                 child: Icon(Icons.store, color: Colors.grey[400]),
               ),
               SizedBox(width: 16),
@@ -109,22 +100,13 @@ class CategoryScreen extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _getCategoryColor(store.category),
+                        color: _getCategoryColor(store.categoryName),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text(
-                        store.category,
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
+                      child: Text(store.categoryName, style: TextStyle(color: Colors.white, fontSize: 12)),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      store.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                    Text(store.storeName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     SizedBox(height: 4),
                     Text(
                       store.description,
@@ -139,12 +121,9 @@ class CategoryScreen extends StatelessWidget {
                         Text('${store.rating}'),
                         SizedBox(width: 8),
                         Icon(Icons.chat_bubble_outline, size: 16),
-                        Text('${store.reviewCount}'),
+                        Text(store.reviewCount),
                         Spacer(),
-                        Text(
-                          store.location,
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
+                        Text(store.address, style: TextStyle(color: Colors.grey[600])),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -153,18 +132,12 @@ class CategoryScreen extends StatelessWidget {
                       children: store.services
                           .map(
                             (service) => Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text(
-                                service,
-                                style: TextStyle(fontSize: 10),
-                              ),
+                              child: Text(service, style: TextStyle(fontSize: 10)),
                             ),
                           )
                           .toList(),
@@ -174,17 +147,10 @@ class CategoryScreen extends StatelessWidget {
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.yellow[600],
-                  borderRadius: BorderRadius.circular(4),
-                ),
+                decoration: BoxDecoration(color: Colors.yellow[600], borderRadius: BorderRadius.circular(4)),
                 child: Text(
                   '예약신청',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ),
             ],

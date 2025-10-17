@@ -20,13 +20,7 @@ class RankingCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 4,
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 4)],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,13 +31,9 @@ class RankingCard extends StatelessWidget {
                   height: 120,
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                   ),
-                  child: Center(
-                    child: Icon(Icons.store, size: 40, color: Colors.grey[400]),
-                  ),
+                  child: Center(child: Icon(Icons.store, size: 40, color: Colors.grey[400])),
                 ),
                 // 순위 배지
                 Positioned(
@@ -55,21 +45,12 @@ class RankingCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: _getRankColor(rank),
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 4,
-                        ),
-                      ],
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4)],
                     ),
                     child: Center(
                       child: Text(
                         '$rank',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                     ),
                   ),
@@ -87,18 +68,10 @@ class RankingCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          rank <= 3 ? Icons.arrow_upward : Icons.arrow_downward,
-                          color: Colors.white,
-                          size: 12,
-                        ),
+                        Icon(rank <= 3 ? Icons.arrow_upward : Icons.arrow_downward, color: Colors.white, size: 12),
                         Text(
                           '${rank <= 3 ? '+' : '-'}$rank',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -114,17 +87,14 @@ class RankingCard extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColors.getCategoryColor(store.category),
+                      color: AppColors.getCategoryColor(store.categoryName),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Text(
-                      store.category,
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                    ),
+                    child: Text(store.categoryName, style: TextStyle(color: Colors.white, fontSize: 10)),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    store.name,
+                    store.storeName,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -135,22 +105,12 @@ class RankingCard extends StatelessWidget {
                       Icon(Icons.star, color: Colors.amber, size: 14),
                       Text('${store.rating}', style: TextStyle(fontSize: 12)),
                       SizedBox(width: 4),
-                      Icon(
-                        Icons.chat_bubble_outline,
-                        size: 12,
-                        color: Colors.grey,
-                      ),
-                      Text(
-                        '${store.reviewCount}',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
+                      Icon(Icons.chat_bubble_outline, size: 12, color: Colors.grey),
+                      Text(store.reviewCount, style: TextStyle(fontSize: 12, color: Colors.grey)),
                     ],
                   ),
                   SizedBox(height: 2),
-                  Text(
-                    store.location,
-                    style: TextStyle(fontSize: 11, color: Colors.grey),
-                  ),
+                  Text(store.address, style: TextStyle(fontSize: 11, color: Colors.grey)),
                 ],
               ),
             ),

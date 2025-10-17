@@ -44,12 +44,9 @@ class StoreSearchDelegate extends SearchDelegate<String> {
         final filteredStores = storeState.stores
             .where(
               (store) =>
-                  store.name.toLowerCase().contains(query.toLowerCase()) ||
-                  store.category.toLowerCase().contains(query.toLowerCase()) ||
-                  store.services.any(
-                    (service) =>
-                        service.toLowerCase().contains(query.toLowerCase()),
-                  ),
+                  store.storeName.toLowerCase().contains(query.toLowerCase()) ||
+                  store.categoryName.toLowerCase().contains(query.toLowerCase()) //||
+                  //store.services.any((service) => service.toLowerCase().contains(query.toLowerCase())),
             )
             .toList();
 
@@ -65,14 +62,11 @@ class StoreSearchDelegate extends SearchDelegate<String> {
               leading: Container(
                 width: 50,
                 height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
                 child: Icon(Icons.store, color: Colors.grey[400]),
               ),
-              title: Text(store.name),
-              subtitle: Text('${store.category} • ${store.location}'),
+              title: Text(store.storeName),
+              subtitle: Text('${store.categoryName} • ${store.address}'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -81,7 +75,7 @@ class StoreSearchDelegate extends SearchDelegate<String> {
                 ],
               ),
               onTap: () {
-                close(context, store.name);
+                close(context, store.storeName);
                 Navigator.pushNamed(context, '/store_detail', arguments: store);
               },
             );
