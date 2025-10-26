@@ -9,8 +9,6 @@ import '../../providers/store_state.dart';
 import '../search/search_delegate.dart';
 import '../../widgets/store_card.dart';
 import '../../widgets/review_card.dart';
-import '../../widgets/product_card.dart';
-import '../../utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sajunara_app/services/api/main_api.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -25,46 +23,42 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // 배너 슬라이드 관련
   int _currentBannerIndex = 0;
   final PageController _bannerController = PageController();
 
-  // 인기 급상승 슬라이드
   int _currentPopularIndex = 0;
   final PageController _popularRankingController = PageController(viewportFraction: 0.85);
 
-  // 전체 순위 슬라이드
   final PageController _allStoresController = PageController(viewportFraction: 0.85);
 
-  // 내 위치 추천 슬라이드
   final PageController _locationController = PageController(viewportFraction: 0.85);
 
-  // 추천 상품 슬라이드
-  int _currentProductIndex = 0;
+  int _currentBanner2Index = 0;
+  final PageController _banner2Controller = PageController();
+
   final PageController _productController = PageController(viewportFraction: 0.4);
 
-  // 베스트 리뷰 슬라이드
   int _currentReviewIndex = 0;
   final PageController _reviewController = PageController(viewportFraction: 0.85);
 
-  // 위치 정보 관련
   Position? _currentPosition;
   bool _isLoadingLocation = true;
   String _locationText = '위치를 불러오는 중...';
 
-  // ✅ MainApi 인스턴스 추가
   final MainApi _mainApi = MainApi();
 
   // ✅ API 데이터를 저장할 변수 추가
   Map<String, dynamic> _mainData = {};
-  bool _isLoadingMainData = false;
-  Timer? _popularAutoSlideTimer;
 
+  //bool _isLoadingMainData = false;
+  Timer? _popularAutoSlideTimer;
+  Timer? _productAutoSlideTimer;
+  Timer? _bannerAutoSlideTimer;
+  Timer? _banner2AutoSlideTimer;
   @override
   void initState() {
     super.initState();
     _initializeData();
-    //_startPopularRankingAutoSlide();
   }
 
   Future<void> _initializeData() async {
@@ -73,10 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadMainData() async {
-    setState(() {
-      _isLoadingMainData = true;
-    });
-
     try {
       final data = await _mainApi.fetMainData(
         requestBody: {
@@ -87,23 +77,25 @@ class _HomeScreenState extends State<HomeScreen> {
       );
       setState(() {
         _mainData = data;
-        _isLoadingMainData = false;
+        //_isLoadingMainData = false;
       });
       _startPopularRankingAutoSlide();
+      _startBannerAutoSlide();
+      _startBanner2AutoSlide();
       // print('✅ 메인 데이터 로드 성공');
       // print('📦 전체 상점: ${(_mainData['allStoreDto'] as List?)?.length ?? 0}개');
       // print('📍 주변 상점: ${(_mainData['nearStoreDto'] as List?)?.length ?? 0}개');
-      // print('🛍️  상품: ${(_mainData['productDto'] as List?)?.length ?? 0}개');
+      //print('🛍️  상품: ${(_mainData['productDto'] as List?)?.length ?? 0}개');
       // print('⭐ 리뷰: ${(_mainData['reviewDto'] as List?)?.length ?? 0}개');
       // print('⭐ 이용약관: ${_mainData['termDto'] != null ? '있음' : '없음'}');
       // print('⭐ 이용약관: ${_mainData['privacyDto'] != null ? '있음' : '없음'}');
       // print('⭐ 메인배너1: ${(_mainData['mainBannerDto'] as List?)?.length ?? 0}개');
-      // print('⭐ 메인배너2: ${(_mainData['mainBanner2Dto'] as List?)?.length ?? 0}개');
+      print('⭐ 메인배너2: ${(_mainData['mainBanner2Dto'] as List?)?.length ?? 0}개');
       // print('⭐ 인기순위: ${(_mainData['popularStoreDto'] as List?)?.length ?? 0}개');
     } catch (e) {
       print('❌ 메인 데이터 로드 실패: $e');
       setState(() {
-        _isLoadingMainData = false;
+        //_isLoadingMainData = false;
       });
 
       if (mounted) {
@@ -120,7 +112,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _locationController.dispose();
     _productController.dispose();
     _reviewController.dispose();
+
     _popularAutoSlideTimer?.cancel();
+    _productAutoSlideTimer?.cancel();
+    _bannerAutoSlideTimer?.cancel();
+    _banner2AutoSlideTimer?.cancel();
     super.dispose();
   }
 
@@ -199,39 +195,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // 배너 자동 슬라이드
-  // void _startBannerAutoSlide() {
-  //   Future.delayed(Duration(seconds: 3), () {
-  //     if (mounted && _bannerController.hasClients) {
-  //       int nextPage = (_currentBannerIndex + 1) % 3;
-  //       _bannerController.animateToPage(nextPage, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-  //       _startBannerAutoSlide();
-  //     }
-  //   });
-  // }
-
-  // 추천 상품 자동 슬라이드
-  // void _startProductAutoSlide() {
-  //   Future.delayed(Duration(seconds: 4), () {
-  //     if (mounted && _productController.hasClients) {
-  //       int nextPage = (_currentProductIndex + 1) % 5;
-  //       _productController.animateToPage(nextPage, duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
-  //       _startProductAutoSlide();
-  //     }
-  //   });
-  // }
-
-  // 베스트 리뷰 자동 슬라이드
-  // void _startReviewAutoSlide() {
-  //   Future.delayed(Duration(seconds: 5), () {
-  //     if (mounted && _reviewController.hasClients) {
-  //       int nextPage = (_currentReviewIndex + 1) % 5;
-  //       _reviewController.animateToPage(nextPage, duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
-  //       _startReviewAutoSlide();
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -246,7 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.event, color: Colors.black),
             onPressed: () {
-              _showEventDialog(context);
+              //_showEventDialog(context);
+              Navigator.pushNamed(context, '/event');
             },
           ),
           IconButton(
@@ -267,13 +231,22 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildMainBanner(context),
+            _buildMainBannerSection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildPopularRankingSection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildAllRankingSection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildCategorySection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildLocationRecommendationSection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
+            _buildBanner2Section(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildProductRecommendationSection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildBestReviewSection(context),
+            SizedBox(height: 16), // ✅ 통일된 간격
             _buildFooterSection(context),
             SizedBox(height: 20),
           ],
@@ -282,14 +255,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 메인 배너 (슬라이드)
-  Widget _buildMainBanner(BuildContext context) {
+  //-------------------------------- 메인 배너 --------------------------------
+  Widget _buildMainBannerSection(BuildContext context) {
     List<dynamic> bannerList = _mainData['mainBannerDto'] ?? [];
     if (bannerList.isEmpty) {
       bannerList = [
         {'title': '운명을 만나는 특별한 순간', 'subtitle': '전문가들이 제공하는 정확한 상담', 'imagePath': null},
-        {'title': '신규 회원 50% 할인', 'subtitle': '지금 바로 상담 받아보세요', 'imagePath': null},
-        {'title': '베스트 리뷰 이벤트', 'subtitle': '리뷰 작성하고 포인트 받으세요', 'imagePath': null},
       ];
     }
 
@@ -309,36 +280,27 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final banner = bannerList[index] as Map<String, dynamic>;
               final imagePath = banner['imagePath'] as String?;
-              final title = banner['title'] ?? '제목 없음';
-              final subtitle = banner['subtitle'] ?? '';
               return ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     // ✅ 배경 이미지 (자동 리사이징)
-                    if (imagePath != null && imagePath.isNotEmpty)
-                      CachedNetworkImage(
-                        imageUrl: Uri.encodeFull('https://amita86tg.duckdns.org$imagePath'),
-                        fit: BoxFit.cover, // ✅ 핵심: 어떤 사이즈든 영역에 맞게 조정
-                        width: double.infinity,
-                        height: double.infinity,
-                        placeholder: (context, url) => Container(
-                          color: Colors.grey[300],
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(colors: [Colors.indigo[400]!, Colors.purple[400]!]),
-                          ),
+                    CachedNetworkImage(
+                      imageUrl: Uri.encodeFull('https://amita86tg.duckdns.org$imagePath'),
+                      fit: BoxFit.cover, // ✅ 핵심: 어떤 사이즈든 영역에 맞게 조정
+                      width: double.infinity,
+                      height: double.infinity,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey[300],
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [Colors.indigo[400]!, Colors.purple[400]!]),
                         ),
                       ),
-                    //else
-                    // ✅ 이미지 없으면 그라데이션
-                    // Container(
-                    //   decoration: BoxDecoration(gradient: LinearGradient(colors: _getBannerGradientColors(index))),
-                    // ),
-                    // ✅ 반투명 오버레이
+                    ),
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -348,55 +310,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-
-                    // ✅ 텍스트
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(color: Colors.black.withOpacity(0.7), offset: Offset(2, 2), blurRadius: 4),
-                                ],
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            if (subtitle.isNotEmpty) ...[
-                              SizedBox(height: 8),
-                              Text(
-                                subtitle,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  shadows: [
-                                    Shadow(color: Colors.black.withOpacity(0.7), offset: Offset(1, 1), blurRadius: 3),
-                                  ],
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               );
             },
           ),
-
-          // 인디케이터
           Positioned(
             bottom: 16,
             left: 0,
@@ -422,7 +340,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 인기 급상승 순위 (슬라이드)
+  void _startBannerAutoSlide() {
+    _bannerAutoSlideTimer?.cancel();
+
+    _bannerAutoSlideTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+      if (!mounted || !_bannerController.hasClients) {
+        timer.cancel();
+        return;
+      }
+
+      List<dynamic> bannerList = _mainData['mainBannerDto'] ?? [];
+
+      if (bannerList.isEmpty) {
+        bannerList = [
+          {'title': '운명을 만나는 특별한 순간', 'subtitle': '전문가들이 제공하는 정확한 상담', 'imagePath': null},
+          {'title': '신규 회원 50% 할인', 'subtitle': '지금 바로 상담 받아보세요', 'imagePath': null},
+          {'title': '베스트 리뷰 이벤트', 'subtitle': '리뷰 작성하고 포인트 받으세요', 'imagePath': null},
+        ];
+      }
+
+      if (bannerList.length <= 1) {
+        return; // 배너가 1개 이하면 슬라이드 안 함
+      }
+
+      int nextPage = (_currentBannerIndex + 1) % bannerList.length;
+
+      _bannerController.animateToPage(nextPage, duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+    });
+  }
+
+  //-------------------------------- 인기급상승 --------------------------------
   Widget _buildPopularRankingSection(BuildContext context) {
     List<dynamic> popularList = _mainData['popularStoreDto'] ?? [];
     return _buildSection(
@@ -433,10 +380,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onShowAll: () => _showAllRankingDialog(context, '인기 급상승'),
       child: Column(
         children: [
-          // ✅ 입점사 카드 (세로 슬라이드)
           popularList.isEmpty
               ? Center(
-                  child: Padding(padding: EdgeInsets.all(20), child: Text('인기 상점이 없습니다')),
+                  child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()),
                 )
               : SizedBox(
                   height: 90,
@@ -452,9 +398,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       final storeData = popularList[index] as Map<String, dynamic>;
                       final store = Store.fromJson(storeData); // ✅ JSON → Store 변환
-
                       return GestureDetector(
                         onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => StoreDetailScreen(store: store)),
+                          // );
                           Navigator.pushNamed(context, '/store_detail', arguments: store);
                         },
                         child: Container(
@@ -516,17 +465,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               SizedBox(width: 8),
-
-                              // // 리뷰 버튼
-                              // Container(
-                              //   width: 36,
-                              //   height: 36,
-                              //   decoration: BoxDecoration(
-                              //     color: Colors.grey[100],
-                              //     borderRadius: BorderRadius.circular(18),
-                              //   ),
-                              //   child: Icon(Icons.chat_bubble_outline, size: 18, color: Colors.grey[700]),
-                              // ),
                             ],
                           ),
                         ),
@@ -584,7 +522,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _startPopularRankingAutoSlide() {
-    // 기존 타이머 취소
     _popularAutoSlideTimer?.cancel();
 
     _popularAutoSlideTimer = Timer.periodic(Duration(seconds: 2), (timer) {
@@ -637,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 전체 순위 (슬라이드)
+  //-------------------------------- 전체 순위 --------------------------------
   Widget _buildAllRankingSection(BuildContext context) {
     List<dynamic> allStores = _mainData['allStoreDto'] ?? [];
 
@@ -648,16 +585,18 @@ class _HomeScreenState extends State<HomeScreen> {
       showAll: true,
       onShowAll: () => _showAllRankingDialog(context, '전체 순위'),
       child: allStores.isEmpty
-          ? Center(child: Text('데이터를 조회중입니다...'))
+          ? Center(
+              child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()),
+            )
           : SizedBox(
-              height: 200,
+              height: 190,
               child: PageView.builder(
                 controller: _allStoresController,
                 itemCount: allStores.length,
                 itemBuilder: (context, index) {
                   final store = allStores[index];
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 1),
                     child: StoreCard(
                       store: Store.fromJson(store), // JSON을 Store 객체로 변환
                     ),
@@ -665,41 +604,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-    );
-  }
-
-  Widget _buildCategoryRankingButton(BuildContext context, String category, Color color, IconData icon) {
-    return GestureDetector(
-      onTap: () {
-        if (category == '쇼핑몰') {
-          _showShoppingMallDialog(context);
-        } else {
-          _showCategoryRankingDialog(context, category);
-        }
-      },
-      child: SizedBox(
-        width: 70,
-        child: Column(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(color: color.withOpacity(0.3)),
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            SizedBox(height: 8),
-            Text(
-              category,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: color),
-            ),
-            Text('전체 순위', style: TextStyle(fontSize: 10, color: Colors.grey[600])),
-          ],
-        ),
-      ),
     );
   }
 
@@ -725,28 +629,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
             },
-            child: Column(
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: (category['color'] as Color).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(category['icon'] as IconData, color: category['color'] as Color, size: 30),
-                ),
-                SizedBox(height: 8),
-                Text(category['name'] as String, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-              ],
-            ),
           );
         }).toList(),
       ),
     );
   }
 
-  // 내 위치 추천 (슬라이드) - Geocoding 적용
+  //-------------------------------- 내 위치 추천 --------------------------------
   Widget _buildLocationRecommendationSection(BuildContext context) {
     List<dynamic> nearStore = _mainData['nearStoreDto'] ?? [];
     return _buildSection(
@@ -754,7 +643,6 @@ class _HomeScreenState extends State<HomeScreen> {
       title: '내 위치 추천',
       subtitle: _locationText,
       showAll: true,
-      onShowAll: () => _showLocationRecommendationDialog(context),
       child: _isLoadingLocation
           ? Center(
               child: Padding(
@@ -791,8 +679,117 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 추천 상품, 총알 배송 (슬라이드)
+  //-------------------------------- 인기,신규 소개 --------------------------------
+  Widget _buildBanner2Section(BuildContext context) {
+    List<dynamic> banner2List = _mainData['mainBanner2Dto'] ?? [];
+    if (banner2List.isEmpty) {
+      banner2List = [
+        {'title': '운명을 만나는 특별한 순간', 'subtitle': '전문가들이 제공하는 정확한 상담', 'imagePath': null},
+      ];
+    }
+
+    return Container(
+      height: 150,
+      margin: EdgeInsets.all(16),
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _banner2Controller,
+            onPageChanged: (index) {
+              setState(() {
+                _currentBanner2Index = index;
+              });
+            },
+            itemCount: banner2List.length,
+            itemBuilder: (context, index) {
+              final banner = banner2List[index] as Map<String, dynamic>;
+              final imagePath = banner['imagePath'] as String?;
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // ✅ 배경 이미지 (자동 리사이징)
+                    CachedNetworkImage(
+                      imageUrl: Uri.encodeFull('https://amita86tg.duckdns.org$imagePath'),
+                      fit: BoxFit.cover, // ✅ 핵심: 어떤 사이즈든 영역에 맞게 조정
+                      width: double.infinity,
+                      height: double.infinity,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey[300],
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [Colors.indigo[400]!, Colors.purple[400]!]),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.black.withOpacity(0.2), Colors.black.withOpacity(0.4)],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                banner2List.length,
+                (index) => Container(
+                  width: 8,
+                  height: 8,
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: index == _currentBanner2Index ? Colors.white : Colors.white38,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _startBanner2AutoSlide() {
+    _banner2AutoSlideTimer?.cancel();
+
+    _banner2AutoSlideTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+      if (!mounted || !_banner2Controller.hasClients) {
+        timer.cancel();
+        return;
+      }
+
+      List<dynamic> mainBanner2List = _mainData['mainBanner2Dto'] ?? [];
+
+      if (mainBanner2List.length <= 1) {
+        return; // 배너가 1개 이하면 슬라이드 안 함
+      }
+
+      int nextPage = (_currentBanner2Index + 1) % mainBanner2List.length;
+
+      _banner2Controller.animateToPage(nextPage, duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+    });
+  }
+
+  //-------------------------------- 쇼핑몰 --------------------------------
   Widget _buildProductRecommendationSection(BuildContext context) {
+    List<dynamic> products = _mainData['productDto'] ?? [];
+    List<dynamic> displayProducts = products.length > 3 ? products.sublist(0, 3) : products;
+
     return Container(
       margin: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -801,6 +798,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
+          // 헤더
           Container(
             padding: EdgeInsets.all(16),
             child: Row(
@@ -808,15 +806,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Icon(Icons.local_shipping, color: Colors.orange[700], size: 24),
                 SizedBox(width: 8),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '추천 상품, 총알 배송',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange[800]),
-                      ),
-                      Text('인기, 신규 소개', style: TextStyle(color: Colors.orange[600], fontSize: 14)),
-                    ],
+                  child: Text(
+                    '추천 상품, 총알 배송',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange[800]),
                   ),
                 ),
                 ElevatedButton(
@@ -831,61 +823,93 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              SizedBox(
-                height: 180,
-                child: PageView.builder(
-                  controller: _productController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentProductIndex = index;
-                    });
-                  },
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: ProductCard(
-                        name: _getProductName(index),
-                        price: _getProductPrice(index),
-                        originalPrice: _getOriginalPrice(index),
-                        discount: _getDiscount(index),
-                        isNew: index < 2,
-                        isPopular: index % 2 == 0,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Positioned(
-                bottom: 8,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    5,
-                    (index) => Container(
-                      width: 6,
-                      height: 6,
-                      margin: EdgeInsets.symmetric(horizontal: 3),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: index == _currentProductIndex ? Colors.orange : Colors.grey[400],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          SizedBox(height: 12),
+          // 상품 리스트
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Row(
+              children: displayProducts.map((product) {
+                return Expanded(child: _buildProductCard(product));
+              }).toList(),
+            ),
           ),
-          SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  // 베스트 리뷰 (슬라이드)
+  Widget _buildProductCard(dynamic product) {
+    final imagePath = product['imagePath'];
+    String? getImageUrl(String? path) {
+      if (path == null || path.isEmpty) return null;
+      if (path.startsWith('http')) return path;
+      if (!path.startsWith('/')) path = '/$path';
+      return 'https://amita86tg.duckdns.org$path';
+    }
+
+    final imageUrl = getImageUrl(imagePath);
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 상품 이미지
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            child: imageUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    width: double.infinity,
+                    height: 130,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 130,
+                      color: Colors.grey[300],
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) {
+                      print('❌ Image load error: $error');
+                      print('❌ Failed URL: $url');
+                      return Container(
+                        height: 130,
+                        color: Colors.grey[300],
+                        child: Center(child: Icon(Icons.shopping_bag, size: 40, color: Colors.grey[400])),
+                      );
+                    },
+                  )
+                : Container(
+                    height: 130,
+                    color: Colors.grey[300],
+                    child: Center(child: Icon(Icons.shopping_bag, size: 40, color: Colors.grey[400])),
+                  ),
+          ),
+          // 상품명
+          Padding(
+            padding: EdgeInsets.fromLTRB(8, 8, 8, 4),
+            child: Text(
+              product['name'] ?? '',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          // 가격
+          Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Text(
+              '${(product['price'])} 원',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red[700]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //-------------------------------- 베스트 리뷰 --------------------------------
   Widget _buildBestReviewSection(BuildContext context) {
     List<dynamic> reviewList = _mainData['reviewDto'] ?? [];
 
@@ -897,23 +921,21 @@ class _HomeScreenState extends State<HomeScreen> {
         showAll: false,
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(40),
+            padding: EdgeInsets.all(10),
             child: Text('등록된 리뷰가 없습니다', style: TextStyle(color: Colors.grey[600])),
           ),
         ),
       );
     }
-
     return _buildSection(
       context,
       title: '베스트 리뷰',
       showAll: true,
-      onShowAll: () => _showBestReviewDialog(context),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           SizedBox(
-            height: 150,
+            height: 350,
             child: PageView.builder(
               controller: _reviewController,
               onPageChanged: (index) {
@@ -921,14 +943,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   _currentReviewIndex = index;
                 });
               },
-              itemCount: reviewList.length, // ✅ 실제 리뷰 개수
+              itemCount: reviewList.length,
               itemBuilder: (context, index) {
                 final reviewJson = reviewList[index] as Map<String, dynamic>;
-                final review = Review.fromJson(reviewJson); // ✅ JSON → Review 변환
+                final review = Review.fromJson(reviewJson);
 
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: ReviewCard(review: review), // ✅ review 객체 전달
+                  child: ReviewCard(review: review),
                 );
               },
             ),
@@ -938,13 +960,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                reviewList.length, // ✅ 실제 리뷰 개수
+                reviewList.length,
                 (index) => Container(
                   width: 6,
-                  height: 6,
+                  height: 19,
                   margin: EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle, // ✅ 원형으로 수정
+                    shape: BoxShape.circle,
                     color: index == _currentReviewIndex ? Colors.blue : Colors.grey[400],
                   ),
                 ),
@@ -956,6 +978,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  //-------------------------------- footer --------------------------------
   Widget _buildFooterSection(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -977,12 +1000,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           SizedBox(height: 8),
-          Text('© 2025 사주나라. All rights reserved.', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+          Text('© 2025 무물. All rights reserved.', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
         ],
       ),
     );
   }
 
+  //-------------------------------- 공통 --------------------------------
   Widget _buildSection(
     BuildContext context, {
     required String title,
@@ -995,43 +1019,26 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  if (showAll) TextButton(onPressed: onShowAll, child: Text('전체보기')),
-                ],
+                children: [Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))],
               ),
-              if (subtitle != null) Text(subtitle, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+              if (subtitle != null)
+                Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Text(subtitle, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                ),
             ],
           ),
         ),
+        SizedBox(height: 12),
         child,
       ],
     );
-  }
-
-  String _getProductName(int index) {
-    final products = ['행운의 부적', '수험생 합격 부적', '연애운 타로카드', '재물운 수정구슬', '액막이 팔찌'];
-    return products[index % products.length];
-  }
-
-  int _getProductPrice(int index) {
-    final prices = [15000, 25000, 35000, 45000, 20000];
-    return prices[index % prices.length];
-  }
-
-  int _getOriginalPrice(int index) {
-    return (_getProductPrice(index) * 1.3).round();
-  }
-
-  int _getDiscount(int index) {
-    final discounts = [20, 30, 15, 25, 35];
-    return discounts[index % discounts.length];
   }
 
   void _showEventDialog(BuildContext context) {
@@ -1102,51 +1109,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showCategoryRankingDialog(BuildContext context, String category) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('$category 순위'),
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 300,
-          child: Consumer<StoreState>(
-            builder: (context, storeState, child) {
-              final filteredStores = storeState.stores.where((store) => store.categoryName == category).toList();
-
-              return ListView.builder(
-                itemCount: filteredStores.length,
-                itemBuilder: (context, index) {
-                  final store = filteredStores[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: AppColors.getCategoryColor(category),
-                      child: Text('${index + 1}'),
-                    ),
-                    title: Text(store.storeName),
-                    subtitle: Text(store.address),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        Text('${store.rating}'),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/store_detail', arguments: store);
-                    },
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text('닫기'))],
-      ),
-    );
-  }
-
   void _showShoppingMallDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -1162,78 +1124,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text('이동'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showLocationRecommendationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('내 위치 추천'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('위치 기반 추천 서비스입니다.'),
-            SizedBox(height: 8),
-            Text(
-              '현재 위치: $_locationText',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-            if (_currentPosition != null) ...[
-              SizedBox(height: 8),
-              Text(
-                '위도: ${_currentPosition!.latitude.toStringAsFixed(6)}',
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-              Text(
-                '경도: ${_currentPosition!.longitude.toStringAsFixed(6)}',
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _getCurrentLocation(); // 위치 새로고침
-            },
-            child: Text('새로고침'),
-          ),
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('확인')),
-        ],
-      ),
-    );
-  }
-
-  void _showBestReviewDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('베스트 리뷰'),
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 300,
-          child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Card(
-                child: ListTile(
-                  leading: CircleAvatar(child: Text('${index + 1}')),
-                  title: Text('홍길동 님'),
-                  subtitle: Text('정말 정확한 상담이었어요! 추천합니다.'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(5, (i) => Icon(Icons.star, color: Colors.amber, size: 12)),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text('닫기'))],
       ),
     );
   }
@@ -1254,10 +1144,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: term != null
               ? SingleChildScrollView(
                   child: Html(
-                    // ✅ Text 대신 Html 위젯 사용
                     data: term['content'] ?? '<p>내용이 없습니다.</p>',
                     style: {
-                      // ✅ 스타일 커스터마이징 (선택사항)
                       "body": Style(fontSize: FontSize(14), lineHeight: LineHeight(1.6)),
                       "p": Style(margin: Margins.only(bottom: 12)),
                       "h1": Style(fontSize: FontSize(18), fontWeight: FontWeight.bold),
@@ -1287,10 +1175,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: privacy != null
               ? SingleChildScrollView(
                   child: Html(
-                    // ✅ Text 대신 Html 위젯 사용
                     data: privacy['content'] ?? '<p>내용이 없습니다.</p>',
                     style: {
-                      // ✅ 스타일 커스터마이징 (선택사항)
                       "body": Style(fontSize: FontSize(14), lineHeight: LineHeight(1.6)),
                       "p": Style(margin: Margins.only(bottom: 12)),
                       "h1": Style(fontSize: FontSize(18), fontWeight: FontWeight.bold),

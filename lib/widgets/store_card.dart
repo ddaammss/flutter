@@ -18,11 +18,7 @@ class StoreCard extends StatelessWidget {
       child: Container(
         width: 160,
         margin: EdgeInsets.only(right: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          //boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 4)],
-        ),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,7 +39,6 @@ class StoreCard extends StatelessWidget {
                   errorWidget: (context, url, error) =>
                       Center(child: Icon(Icons.store, size: 40, color: Colors.grey[400])),
                 ),
-                //: Center(child: Icon(Icons.store, size: 40, color: Colors.grey[400])),
               ),
             ),
 

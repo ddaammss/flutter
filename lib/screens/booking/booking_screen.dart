@@ -194,44 +194,42 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
             ),
 
-            SizedBox(height: 24),
+            //SizedBox(height: 24),
 
             // 총 금액
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(8)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('총 1개', style: TextStyle(fontSize: 16)),
-                  Text(
-                    //'총금액 ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
-                    '1',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 100),
+            // Container(
+            //   padding: EdgeInsets.all(16),
+            //   decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(8)),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text('총 1개', style: TextStyle(fontSize: 16)),
+            //       Text(
+            //         //'총금액 ${(store.price * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+            //         '1',
+            //         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            //SizedBox(height: 100),
           ],
         ),
       ),
+
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(16),
         child: ElevatedButton(
-          onPressed: _isFormValid()
-              ? () {
-                  _showPaymentDialog(context, store);
-                }
-              : null,
+          onPressed: () {
+            //Navigator.pushNamed(context, '/booking', arguments: widget.store);
+          },
           style: ElevatedButton.styleFrom(
-            backgroundColor: _isFormValid() ? Colors.orange : Colors.grey,
+            backgroundColor: Colors.black,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: Text('1', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          child: Text('빠른 예약', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
       ),
     );
