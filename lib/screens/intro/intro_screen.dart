@@ -197,7 +197,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 foregroundColor: Colors.indigo[900],
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
-              child: Text('시작하1111기'),
+              child: Text('시작하기'),
             ),
           ],
         ),

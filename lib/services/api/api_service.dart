@@ -7,7 +7,8 @@ class ApiService {
 
   String get baseUrl {
     if (Platform.isAndroid) {
-      return 'http://10.0.2.2:8080'; // Android 에뮬레이터
+      //return 'http://10.0.2.2:8080';
+      return 'https://amita86tg.duckdns.org';
     } else if (Platform.isIOS) {
       return 'http://localhost:8080'; // iOS 시뮬레이터
     } else {
