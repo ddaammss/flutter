@@ -6,7 +6,7 @@ import 'package:sajunara_app/models/review.dart';
 import 'package:sajunara_app/models/store.dart';
 import '../../providers/app_state.dart';
 import '../../providers/store_state.dart';
-import '../search/search_delegate.dart';
+import '../search/store_search_bottom_sheet.dart';
 import '../../widgets/store_card.dart';
 import '../../widgets/review_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // print('⭐ 이용약관: ${_mainData['termDto'] != null ? '있음' : '없음'}');
       // print('⭐ 이용약관: ${_mainData['privacyDto'] != null ? '있음' : '없음'}');
       // print('⭐ 메인배너1: ${(_mainData['mainBannerDto'] as List?)?.length ?? 0}개');
-      print('⭐ 메인배너2: ${(_mainData['mainBanner2Dto'] as List?)?.length ?? 0}개');
+      //print('⭐ 메인배너2: ${(_mainData['mainBanner2Dto'] as List?)?.length ?? 0}개');
       // print('⭐ 인기순위: ${(_mainData['popularStoreDto'] as List?)?.length ?? 0}개');
     } catch (e) {
       print('❌ 메인 데이터 로드 실패: $e');
@@ -216,7 +216,12 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.search, color: Colors.black),
             onPressed: () {
-              showSearch(context: context, delegate: StoreSearchDelegate());
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => StoreSearchBottomSheet(),
+              );
             },
           ),
           IconButton(

@@ -13,7 +13,7 @@ class StoreDetailScreen extends StatefulWidget {
 }
 
 class _StoreDetailScreenState extends State<StoreDetailScreen> {
-  final StoreDetailApi _storeApi = StoreDetailApi();
+  final StoreApi _storeApi = StoreApi();
   final String baseUrl = 'https://amita86tg.duckdns.org';
 
   Map<String, dynamic> _storeDetail = {};

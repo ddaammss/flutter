@@ -1,7 +1,7 @@
 import 'package:sajunara_app/services/api/api_service.dart';
 import 'dart:convert';
 
-class StoreDetailApi {
+class StoreApi {
   final ApiService _apiService = ApiService();
 
   // ✅ Map으로 반환 타입 변경
@@ -31,6 +31,41 @@ class StoreDetailApi {
         throw Exception('Failed to load main: ${response.statusCode}');
       }
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> searchStores({required Map<String, dynamic> requestBody}) async {
+    try {
+      final response = await _apiService.post('/app/api/store', body: requestBody);
+      print('📡 [리스트] 응답 상태 코드: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final decoded = json.decode(utf8.decode(response.bodyBytes));
+
+        if (decoded is Map<String, dynamic>) {
+          bool success = decoded['success'] ?? false;
+          String message = decoded['message'] ?? '';
+
+          if (success) {
+            if (decoded['data'] != null && decoded['data']['storeListDto'] is List) {
+              List<dynamic> list = decoded['data']['storeListDto'];
+              print('✅ 입점사 개수: ${list.length}');
+              return list;
+            } else {
+              print('⚠️ eventListDto가 없거나 List가 아님');
+              return [];
+            }
+          } else {
+            throw Exception('API 에러: $message');
+          }
+        } else {
+          throw Exception('예상치 못한 데이터 타입: ${decoded.runtimeType}');
+        }
+      } else {
+        throw Exception('Failed to load events: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ searchStores 에러: $e');
       rethrow;
     }
   }

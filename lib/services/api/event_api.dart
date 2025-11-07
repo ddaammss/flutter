@@ -20,9 +20,9 @@ class EventApi {
 
           if (success) {
             if (decoded['data'] != null && decoded['data']['eventListDto'] is List) {
-              List<dynamic> eventList = decoded['data']['eventListDto'];
-              print('✅ 이벤트 개수: ${eventList.length}');
-              return eventList;
+              List<dynamic> list = decoded['data']['eventListDto'];
+              print('✅ 이벤트 개수: ${list.length}');
+              return list;
             } else {
               print('⚠️ eventListDto가 없거나 List가 아님');
               return [];
