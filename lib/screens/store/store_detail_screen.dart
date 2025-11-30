@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sajunara_app/models/booking.dart';
 import 'package:sajunara_app/models/store.dart';
 import 'package:sajunara_app/services/api/store_api.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -44,7 +45,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
     });
 
     try {
-      final data = await _storeApi.fetStoreDetailData(requestBody: widget.store.toJson());
+      final data = await _storeApi.fetctStoreDetailData(requestBody: widget.store.toJson());
 
       setState(() {
         _storeDetail = data;
@@ -236,7 +237,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
     final address = _storeDetail['address'] ?? widget.store.address;
     final operatingHours = _storeDetail['operatingHours'] ?? widget.store.operatingHours;
     final reviewCount = _storeDetail['reviewCount'] ?? widget.store.reviewCount;
-    final rating = double.tryParse(_storeDetail['grade']?.toString() ?? '0')?.toInt() ?? 0;
+    final rating = double.tryParse(_storeDetail['grade'] ?? '0');
     final memo = _storeDetail['memo'] ?? '안녕하세요. $storeName입니다.\n정확한 상담을 위해 예약 시간을 꼭 지켜주세요.';
 
     return Scaffold(
@@ -395,12 +396,24 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
   }
 
   Widget _buildServiceItem(BuildContext context, dynamic service) {
-    final serviceName = service is String ? service : (service['productName'] ?? service['name'] ?? '서비스');
-    final servicePrice = service is Map ? (service['price'] ?? 0) : 0;
+    final serviceName = service['name'] ?? '서비스';
+    final servicePrice = service['price'] ?? 0;
 
+    final Booking booking = Booking();
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/booking', arguments: widget.store);
+        final booking = Booking(
+          seq: widget.store.seq.toString(),
+          serviceSeq: service['seq'],
+          storeName: widget.store.storeName, // UI 표시용
+          productName: serviceName, // UI 표시용
+          productPrice: servicePrice.toString(), // UI 표시용
+          categoryName: widget.store.categoryName,
+          address: widget.store.address,
+          // ... 나머지 필드들
+        );
+
+        Navigator.pushNamed(context, '/booking', arguments: booking);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12),
@@ -433,14 +446,14 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
 
   Widget _buildReviewItem(BuildContext context, dynamic review) {
     final userName = review['userNickname'] ?? '홍길동';
+    final storeName = review['storeName'] ?? '';
     final content = review['content'] ?? '';
     final createdAt = review['createdAt'] ?? '';
-    //final reply = review['reply'];
+    final reply = review['reply'];
     final imagePath = review['imagePath'] ?? '';
-
+    final profileImage = review['profileImage'] ?? '';
     final gradeStr = review['grade']?.toString() ?? '5';
     final rating = int.tryParse(gradeStr) ?? 5;
-
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
@@ -450,10 +463,16 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
         children: [
           Row(
             children: [
-              // ✅ 사용자 프로필 이미지는 없으므로 기본 아바타만 표시
               CircleAvatar(
                 radius: 20,
-                child: Text(userName.isNotEmpty ? userName[0] : '홍', style: TextStyle(fontWeight: FontWeight.bold)),
+                backgroundImage: profileImage != null && profileImage.isNotEmpty ? NetworkImage(profileImage) : null,
+                backgroundColor: Colors.grey[300],
+                // child: profileImage == null || profileImage.isEmpty
+                //     ? Text(
+                //         userName.isNotEmpty ? userName[0].toUpperCase() : '홍',
+                //         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                //       )
+                //     : null,
               ),
               SizedBox(width: 12),
               Expanded(
@@ -492,29 +511,35 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
           ],
 
           // ✅ 입점사 답변
-          // if (reply != null && reply.toString().isNotEmpty) ...[
-          //   SizedBox(height: 12),
-          //   Container(
-          //     padding: EdgeInsets.all(12),
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(8),
-          //       border: Border.all(color: Colors.grey[200]!),
-          //     ),
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //         Container(
-          //           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          //           decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(4)),
-          //           child: Text('입점사 답변', style: TextStyle(color: Colors.white, fontSize: 12)),
-          //         ),
-          //         SizedBox(height: 8),
-          //         Text(reply.toString(), style: TextStyle(color: Colors.grey[700])),
-          //       ],
-          //     ),
-          //   ),
-          // ],
+          if (reply != null && reply.toString().isNotEmpty) ...[
+            SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end, // ← 오른쪽 정렬
+              children: [
+                Container(
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85), // ← 최대 너비 85%
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(4)),
+                        child: Text(storeName, style: TextStyle(color: Colors.white, fontSize: 12)),
+                      ),
+                      SizedBox(height: 8),
+                      Text(reply.toString(), style: TextStyle(color: Colors.grey[700])),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

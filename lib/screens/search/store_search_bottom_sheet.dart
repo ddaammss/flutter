@@ -13,7 +13,7 @@ class _StoreSearchBottomSheetState extends State<StoreSearchBottomSheet> {
   final TextEditingController _searchController = TextEditingController();
   final StoreApi _storeApi = StoreApi();
   bool _isLoading = false;
-  List<dynamic> _store = [];
+  Map<String, dynamic> _store = {};
   bool _hasSearched = false; // 검색을 실행했는지 여부
 
   @override
@@ -36,7 +36,7 @@ class _StoreSearchBottomSheetState extends State<StoreSearchBottomSheet> {
     });
 
     try {
-      final data = await _storeApi.searchStores(requestBody: {'storeName': query});
+      final data = await _storeApi.fetchStoreListData(requestBody: {'storeName': query});
       setState(() {
         _store = data;
         _isLoading = false;
@@ -44,7 +44,7 @@ class _StoreSearchBottomSheetState extends State<StoreSearchBottomSheet> {
     } catch (e) {
       print('❌ 입점사 검색 에러: $e');
       setState(() {
-        _store = [];
+        _store = {};
         _isLoading = false;
       });
 
@@ -106,7 +106,7 @@ class _StoreSearchBottomSheetState extends State<StoreSearchBottomSheet> {
                                   onPressed: () {
                                     setState(() {
                                       _searchController.clear();
-                                      _store = [];
+                                      _store = {};
                                       _hasSearched = false;
                                     });
                                   },
@@ -156,7 +156,8 @@ class _StoreSearchBottomSheetState extends State<StoreSearchBottomSheet> {
       return Center(child: CircularProgressIndicator());
     }
 
-    final storeList = _store;
+    // Map에서 리스트 추출 (data 키에 리스트가 들어있다고 가정)
+    final storeList = (_store['storeListDto'] as List<dynamic>?) ?? [];
 
     // 검색 결과 없음
     if (storeList.isEmpty) {
@@ -178,7 +179,7 @@ class _StoreSearchBottomSheetState extends State<StoreSearchBottomSheet> {
       itemCount: storeList.length,
       separatorBuilder: (context, index) => Divider(height: 1, indent: 72),
       itemBuilder: (context, index) {
-        final store = storeList[index];
+        final store = storeList[index] as Map<String, dynamic>?;
         if (store == null) {
           return SizedBox.shrink(); // 빈 위젯 반환
         }

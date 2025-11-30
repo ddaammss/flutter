@@ -16,21 +16,20 @@ class Store {
   final String imagePath;
 
   Store({
-    required this.seq,
-    required this.storeCode,
-    required this.storeName,
-    required this.description,
-    required this.categoryName,
-    required this.address,
-    required this.grade,
-    required this.reviewCount,
-    required this.latitude,
-    required this.longitude,
-    required this.distance,
-    required this.services,
-
-    required this.operatingHours,
-    required this.imagePath,
+    this.seq = '',
+    this.storeCode = '',
+    this.storeName = '',
+    this.description = '',
+    this.categoryName = '',
+    this.address = '',
+    this.grade = '',
+    this.reviewCount = '0',
+    this.latitude = 0.0,
+    this.longitude = 0.0,
+    this.distance = 0.0,
+    this.services = const [],
+    this.operatingHours = '',
+    this.imagePath = '',
   });
 
   // ✅ JSON → Store 객체로 변환
@@ -85,4 +84,6 @@ class Store {
 
   // ✅ 평점을 double로 반환 (편의 메서드)
   double get rating => double.tryParse(grade ?? '0') ?? 0.0;
+
+  void operator []=(String other, value) {}
 }

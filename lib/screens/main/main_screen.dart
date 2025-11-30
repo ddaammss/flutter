@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajunara_app/providers/app_state.dart';
 //import 'package:sajunara_app/providers/store_state.dart';
-import 'package:sajunara_app/screens/category/category_screen.dart';
+//import 'package:sajunara_app/screens/category/category_screen.dart';
+import 'package:sajunara_app/screens/store/store_list_screen.dart';
 import 'package:sajunara_app/screens/main/home_screen.dart';
-import 'package:sajunara_app/screens/user/my_bookings_screen.dart';
-import 'package:sajunara_app/screens/user/my_page_screen.dart';
+import 'package:sajunara_app/screens/booking/my_bookings_screen.dart';
+import 'package:sajunara_app/screens/mypage/my_page_screen.dart';
 
 // 메인 화면
 class MainScreen extends StatelessWidget {
@@ -22,11 +23,11 @@ class MainScreen extends StatelessWidget {
             case 0:
               return HomeScreen();
             case 1:
-              return CategoryScreen(category: '신점');
+              return StoreListScreen(key: ValueKey('0'), categoryType: '0');
             case 2:
-              return CategoryScreen(category: '타로');
+              return StoreListScreen(key: ValueKey('2'), categoryType: '2');
             case 3:
-              return CategoryScreen(category: '철학관');
+              return StoreListScreen(key: ValueKey('1'), categoryType: '1');
             case 4:
               return MyBookingsScreen();
             case 5:

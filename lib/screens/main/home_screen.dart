@@ -184,8 +184,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _isLoadingLocation = false;
         });
 
-        print('현재 위치: ${position.latitude}, ${position.longitude}');
-        print('주소: $locationText');
+        //print('현재 위치: ${position.latitude}, ${position.longitude}');
+        //print('주소: $locationText');
       }
     } catch (e) {
       setState(() {
@@ -1046,30 +1046,30 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showEventDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('진행중인 이벤트'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.card_giftcard, color: Colors.red),
-              title: Text('신규 회원 할인 이벤트'),
-              subtitle: Text('첫 상담 50% 할인'),
-            ),
-            ListTile(
-              leading: Icon(Icons.star, color: Colors.green),
-              title: Text('리뷰 작성 이벤트'),
-              subtitle: Text('리뷰 작성시 포인트 적립'),
-            ),
-          ],
-        ),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text('확인'))],
-      ),
-    );
-  }
+  // void _showEventDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Text('진행중인 이벤트'),
+  //       content: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           ListTile(
+  //             leading: Icon(Icons.card_giftcard, color: Colors.red),
+  //             title: Text('신규 회원 할인 이벤트'),
+  //             subtitle: Text('첫 상담 50% 할인'),
+  //           ),
+  //           ListTile(
+  //             leading: Icon(Icons.star, color: Colors.green),
+  //             title: Text('리뷰 작성 이벤트'),
+  //             subtitle: Text('리뷰 작성시 포인트 적립'),
+  //           ),
+  //         ],
+  //       ),
+  //       actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text('확인'))],
+  //     ),
+  //   );
+  // }
 
   void _showAllRankingDialog(BuildContext context, String type) {
     showDialog(

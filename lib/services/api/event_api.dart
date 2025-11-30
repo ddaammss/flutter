@@ -5,7 +5,7 @@ class EventApi {
   final ApiService _apiService = ApiService();
 
   // ✅ 이벤트 리스트 조회
-  Future<List<dynamic>> fetchEventList({Map<String, dynamic>? requestBody}) async {
+  Future<Map<String, dynamic>> fetchEventList({Map<String, dynamic>? requestBody}) async {
     try {
       final response = await _apiService.post('/app/api/event/list', body: requestBody);
 
@@ -20,12 +20,13 @@ class EventApi {
 
           if (success) {
             if (decoded['data'] != null && decoded['data']['eventListDto'] is List) {
-              List<dynamic> list = decoded['data']['eventListDto'];
-              print('✅ 이벤트 개수: ${list.length}');
+              //List<dynamic> list = decoded['data']['eventListDto'];
+               Map<String, dynamic> list = decoded['data'];
+              //print('✅ 이벤트 개수: ${list.length}');
               return list;
             } else {
               print('⚠️ eventListDto가 없거나 List가 아님');
-              return [];
+              return {};
             }
           } else {
             throw Exception('API 에러: $message');

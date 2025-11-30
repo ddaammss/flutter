@@ -14,7 +14,7 @@ class _EventScreenState extends State<EventScreen> {
   final String baseUrl = 'https://amita86tg.duckdns.org';
   final EventApi _eventApi = EventApi();
 
-  List<dynamic> eventList = []; // ✅ Map → List 변경
+  List<dynamic> eventList = []; // ← Map에서 List로 변경!
   bool _isLoading = true;
 
   @override
@@ -28,9 +28,11 @@ class _EventScreenState extends State<EventScreen> {
       final data = await _eventApi.fetchEventList(requestBody: {});
 
       setState(() {
-        eventList = data; // ✅ EventApi에서 이미 List로 반환됨
+        eventList = (data['eventListDto'] as List<dynamic>?) ?? [];
         _isLoading = false;
       });
+
+      print('✅ 이벤트 개수: ${eventList.length}');
     } catch (e) {
       print('❌ 이벤트 로드 에러: $e');
       setState(() {
@@ -58,16 +60,16 @@ class _EventScreenState extends State<EventScreen> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : eventList
-                .isEmpty // ✅ 빈 리스트 처리
+          : eventList.isEmpty
           ? Center(
               child: Text('등록된 이벤트가 없습니다', style: TextStyle(fontSize: 16, color: Colors.grey)),
             )
           : ListView.builder(
               padding: EdgeInsets.all(16),
-              itemCount: eventList.length, // ✅ 변경
+              itemCount: eventList.length,
               itemBuilder: (context, index) {
-                final event = eventList[index]; // ✅ 변경
+                final event = eventList[index];
+                if (event == null) return SizedBox.shrink();
                 return _buildEventCard(context, event);
               },
             ),
@@ -75,7 +77,7 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   Widget _buildEventCard(BuildContext context, dynamic event) {
-    final isActive = event['status'] == 'active';
+    final isActive = (event['status']?.toString() ?? '') == 'active';
 
     return GestureDetector(
       onTap: isActive
@@ -146,7 +148,7 @@ class _EventScreenState extends State<EventScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event['eventName'] ?? '', // ✅ null 체크
+                    event['eventName']?.toString() ?? '이벤트',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -155,25 +157,10 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '이벤트 기간 : ${event['eventDate'] ?? ''}', // ✅ null 체크
+                    '이벤트 기간 : ${event['eventDate']?.toString() ?? '-'}',
                     style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   ),
                   SizedBox(height: 8),
-                  // Html(
-                  //   data: event['content'] ?? '',
-                  //   style: {
-                  //     "body": Style(
-                  //       fontSize: FontSize(14),
-                  //       color: Colors.grey[700],
-                  //       margin: Margins.zero,
-                  //       padding: HtmlPaddings.zero,
-                  //       maxLines: 2,
-                  //       textOverflow: TextOverflow.ellipsis,
-                  //     ),
-                  //     "p": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-                  //     "div": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-                  //   },
-                  // ),
                   if (isActive) ...[
                     SizedBox(height: 12),
                     Row(
