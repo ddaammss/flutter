@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:sajunara_app/models/review.dart';
 import 'package:sajunara_app/models/store.dart';
+import 'package:sajunara_app/utils/token_service.dart';
 import '../../providers/app_state.dart';
 import '../../providers/store_state.dart';
 import '../search/store_search_bottom_sheet.dart';
@@ -40,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _currentReviewIndex = 0;
   final PageController _reviewController = PageController(viewportFraction: 0.85);
-
+  final TokenService _tokenService = TokenService();
   Position? _currentPosition;
   bool _isLoadingLocation = true;
   String _locationText = '위치를 불러오는 중...';
-
+  bool _isLoggedIn = false;
   final MainApi _mainApi = MainApi();
 
   // ✅ API 데이터를 저장할 변수 추가
@@ -59,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _initializeData();
+    _checkLoginStatus();
   }
 
   Future<void> _initializeData() async {
@@ -118,6 +120,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _bannerAutoSlideTimer?.cancel();
     _banner2AutoSlideTimer?.cancel();
     super.dispose();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final isLoggedIn = await _tokenService.isLoggedIn();
+    setState(() {
+      _isLoggedIn = isLoggedIn;
+    });
   }
 
   // ✅ 권한 체크 후 위치 가져오기
@@ -202,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          '무물',
+          '아미타86TG',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -224,12 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.person_add, color: Colors.black),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
+          if (!_isLoggedIn)
+            IconButton(
+              icon: Icon(Icons.person_add, color: Colors.black),
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
+            ),
         ],
       ),
       body: SingleChildScrollView(

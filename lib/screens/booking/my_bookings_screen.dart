@@ -202,7 +202,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
     final reservationTime = reservation['reservationTime']?.toString() ?? '';
     final productPrice = reservation['productPrice']?.toString();
     final reservationCode = reservation['reservationCode']?.toString() ?? '-';
-
     return GestureDetector(
       onTap: () {
         if (storeSeq != null && storeSeq.isNotEmpty) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sajunara_app/providers/app_state.dart';
 import 'package:sajunara_app/services/api/user_api.dart';
 import 'package:sajunara_app/utils/token_service.dart';
 
@@ -133,6 +135,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     final userEmail = _user?['email']?.toString() ?? '';
     final userBirthDate = _user?['birthYear']?.toString() ?? '';
     final userBirthday = _user?['birthday']?.toString() ?? '';
+    final userBirthTime = _user?['birthTime']?.toString() ?? '';
     final profileImage = _user?['profileImage']?.toString();
     final point = _user?['point']?.toString();
     final coupon = _user?['coupon']?.toString();
@@ -176,7 +179,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ],
                       ),
                       SizedBox(height: 4),
-                      Text('$userEmail ? ahwkt@naver.com', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                      Text(userBirthTime, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
                     ],
                   ),
                 ),
@@ -190,7 +193,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => PointDetailPage()));
+                    Navigator.pushNamed(context, '/my_points');
                   },
                   child: Container(
                     margin: EdgeInsets.all(8),
@@ -301,8 +304,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
         ListTile(
           leading: Icon(Icons.logout, color: Colors.red),
           title: Text('로그아웃', style: TextStyle(color: Colors.red)),
-          onTap: () {
-            //_showLogoutDialog();
+          onTap: () async {
+            await _tokenService.deleteToken();
+            if (mounted) {
+              context.read<AppState>().setCurrentIndex(0);
+              Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
+            }
           },
         ),
       ],

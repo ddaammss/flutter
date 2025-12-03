@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:sajunara_app/models/booking.dart';
 import 'package:sajunara_app/models/store.dart';
 import 'package:sajunara_app/screens/event/event_screen.dart';
+import 'package:sajunara_app/screens/main/home_screen.dart';
 import 'package:sajunara_app/screens/store/store_detail_screen.dart';
 import 'package:sajunara_app/screens/booking/my_bookings_screen.dart';
+import 'package:sajunara_app/screens/user/my_points_screen.dart';
 import 'package:sajunara_app/screens/user/profile_edit_screen.dart';
 import 'providers/app_state.dart';
 import 'providers/user_state.dart';
@@ -36,10 +38,11 @@ class SajuNaraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '무물',
+      title: '아미타86TG',
       theme: ThemeData(primarySwatch: Colors.blueGrey, fontFamily: 'NotoSans', scaffoldBackgroundColor: Colors.white),
       home: IntroScreen(),
       routes: {
+        '/home': (context) => HomeScreen(),
         '/main': (context) => MainScreen(),
         '/login': (context) => LoginScreen(),
         '/store_detail': (context) {
@@ -54,6 +57,8 @@ class SajuNaraApp extends StatelessWidget {
         '/event': (context) => EventScreen(),
         '/my_booking': (context) => MyBookingsScreen(),
         '/profile_edit': (context) => ProfileEditScreen(),
+
+        '/my_points': (context) => MyPointsScreen(),
       },
     );
   }

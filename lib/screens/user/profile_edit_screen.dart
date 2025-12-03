@@ -14,6 +14,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   bool _isLoading = true;
   Map<String, dynamic>? _user;
   String? _selectedBirthTime;
+  String? userBirthday;
   TextEditingController _phoneController = TextEditingController();
 
   // 태어난 시간 목록
@@ -95,6 +96,40 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     }
   }
 
+  Future<void> _updateUserProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userSeq = await _tokenService.getUserSeq();
+      final data = await _api.updateUserProfile(
+        requestBody: {'seq': userSeq, 'birthTime': _selectedBirthTime, 'phone': _phoneController.text},
+      );
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('정보가 수정되었습니다'), backgroundColor: Colors.green, duration: Duration(seconds: 2)),
+        );
+        _loadMyUserInfo();
+      }
+    } catch (e) {
+      print('❌ 프로필 수정 에러: $e');
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('정보 수정 중 오류가 발생했습니다'), backgroundColor: Colors.red, duration: Duration(seconds: 2)),
+        );
+      }
+    }
+  }
+
   Future<void> _navigateToLogin() async {
     final result = await Navigator.pushNamed(context, '/login');
 
@@ -140,14 +175,17 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   itemBuilder: (context, index) {
                     final item = birthTimes[index];
                     final displayText = '${item['label']} ${item['time']}';
+                    var userbirthTime;
+                    final currentValue = _selectedBirthTime ?? userbirthTime;
+
                     return ListTile(
                       title: Center(
                         child: Text(
                           displayText,
                           style: TextStyle(
                             fontSize: 16,
-                            color: _selectedBirthTime == displayText ? Colors.blue : Colors.black,
-                            fontWeight: _selectedBirthTime == displayText ? FontWeight.bold : FontWeight.normal,
+                            color: currentValue == displayText ? Colors.blue : Colors.black,
+                            fontWeight: currentValue == displayText ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                       ),
@@ -217,6 +255,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     final userName = _user?['memberName']?.toString() ?? '사용자';
     final userBirthDate = _user?['birthYear']?.toString() ?? '';
     final userBirthday = _user?['birthday']?.toString() ?? '';
+    final userbirthTime = _user?['birthTime']?.toString() ?? '';
     final gender = (_user?['gender']?.toString() ?? '0') == '0' ? '남자' : '여자';
     final phone = _user?['phone']?.toString() ?? '';
     return SingleChildScrollView(
@@ -313,8 +352,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _selectedBirthTime ?? '태어난 시간을 선택하세요',
-                      style: TextStyle(fontSize: 16, color: _selectedBirthTime != null ? Colors.black : Colors.grey),
+                      _selectedBirthTime ?? userbirthTime ?? '태어난 시간을 선택하세요',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: (_selectedBirthTime ?? userbirthTime) != null ? Colors.black : Colors.grey,
+                      ),
                     ),
                     Icon(Icons.arrow_drop_down, color: Colors.grey),
                   ],
@@ -345,21 +387,21 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  // 수정 로직 (태어난 시간, 휴대폰만 수정)
-                  print('태어난 시간: $_selectedBirthTime');
-                  print('휴대폰: ${_phoneController.text}');
-
-                  // API 호출 예시
-                  // updateProfile(_selectedBirthTime, _phoneController.text);
-
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('정보가 수정되었습니다')));
-                },
+                onPressed: _isLoading ? null : _updateUserProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
-                child: Text('수정하기', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: _isLoading
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text('수정하기', style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ),
           ],

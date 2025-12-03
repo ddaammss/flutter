@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Icon(Icons.person, size: 40, color: Colors.white),
               ),
               SizedBox(height: 20),
-              Text('무물', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Text('아미타86TG', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               SizedBox(height: 30),
 
               // 소셜 로그인 버튼들
